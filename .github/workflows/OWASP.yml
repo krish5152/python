@@ -28,8 +28,16 @@ jobs:
       # Step 3: Download and install OWASP Dependency-Check
       - name: Install OWASP Dependency-Check
         run: |
+          # Download OWASP Dependency-Check
           wget https://github.com/jeremylong/DependencyCheck/releases/download/v8.2.1/dependency-check-8.2.1-release.zip
+          
+          # Create directory for extraction
+          mkdir dependency-check
+          
+          # Unzip Dependency-Check
           unzip dependency-check-8.2.1-release.zip -d dependency-check
+
+          # Make the dependency-check script executable
           chmod +x dependency-check/bin/dependency-check.sh
       
       # Step 4: Run OWASP Dependency-Check scan
