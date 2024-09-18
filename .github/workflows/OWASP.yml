@@ -21,14 +21,13 @@ jobs:
         run: |
           wget https://github.com/jeremylong/DependencyCheck/releases/download/v7.4.0/dependency-check-7.4.0-release.zip
           unzip dependency-check-7.4.0-release.zip
-          mv dependency-check ./dependency-check # Move files to the expected directory
-
+          
       - name: Grant execution permission for the script
         run: chmod +x ./dependency-check/bin/dependency-check.sh
 
       - name: Run OWASP Dependency-Check
         run: |
-          ./dependency-check/bin/dependency-check.sh --project "Python Project" --scan . --format "ALL" --out ./odc-reports
+          ./dependency-check/bin/dependency-check.sh --project "Python" --scan . --format "ALL" --out ./odc-reports
 
       - name: Upload Dependency-Check Report
         uses: actions/upload-artifact@v3
