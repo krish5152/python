@@ -8,11 +8,6 @@ on:
     branches:
       - master
 
-jobs:
-  dependency-check:
-    name: OWASP Dependency-Check
-    runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
