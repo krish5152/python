@@ -20,7 +20,11 @@ jobs:
       - name: Download OWASP Dependency-Check
         run: |
           wget https://github.com/jeremylong/DependencyCheck/releases/download/v7.4.0/dependency-check-7.4.0-release.zip
-          unzip dependency-check-7.4.0-release.zip -d dependency-check
+          unzip dependency-check-7.4.0-release.zip
+          mv dependency-check ./dependency-check # Move files to the expected directory
+
+      - name: Grant execution permission for the script
+        run: chmod +x ./dependency-check/bin/dependency-check.sh
 
       - name: Run OWASP Dependency-Check
         run: |
