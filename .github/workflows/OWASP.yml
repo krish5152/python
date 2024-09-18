@@ -1,4 +1,4 @@
-name: OWASP Dependency-Check for Python
+name: OWASP Dependency-Check
 
 on:
   push:
@@ -17,26 +17,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v3
+      - name: Set up Java
+        uses: actions/setup-java@v3
         with:
-          python-version: '3.x'
+          java-version: '11'
 
-      - name: Install dependencies
+      - name: Download OWASP Dependency-Check
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          wget https://github.com/jeremylong/DependencyCheck/releases/download/v7.4.0/dependency-check-7.4.0-release.zip
+          unzip dependency-check-7.4.0-release.zip -d dependency-check
 
-      - name: OWASP Dependency-Check
+      - name: Run OWASP Dependency-Check
         run: |
-          docker run --rm \
-            --volume $(pwd):/src \
-            --volume $(pwd)/odc-data:/usr/share/dependency-check/data \
-            --volume $(pwd)/odc-reports:/report \
-            owasp/dependency-check \
-            --scan /src \
-            --format "ALL" \
-            --project "Python"
+          ./dependency-check/bin/dependency-check.sh --project "Python Project" --scan . --format "ALL" --out ./odc-reports
 
       - name: Upload Dependency-Check Report
         uses: actions/upload-artifact@v3
