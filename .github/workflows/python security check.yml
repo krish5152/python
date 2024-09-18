@@ -26,5 +26,11 @@ jobs:
           pip install -r requirements.txt
           pip install safety
 
-      - name: Run Safety Check
-        run: safety check -r requirements.txt
+      - name: Run Safety Check and output to file
+        run: safety check -r requirements.txt --output text > safety_report.txt
+
+      - name: Upload Safety report artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: safety-report
+          path: safety_report.txt
