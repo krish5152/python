@@ -1,0 +1,58 @@
+name: OWASP Dependency-Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual trigger of the workflow
+
+jobs:
+  dependency_check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Java (OWASP Dependency-Check requires Java)
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'  # Dependency-Check requires Java
+
+      # Step 3: Download and install OWASP Dependency-Check
+      - name: Install OWASP Dependency-Check
+        run: |
+          wget https://github.com/jeremylong/DependencyCheck/releases/download/v8.2.1/dependency-check-8.2.1-release.zip
+          unzip dependency-check-8.2.1-release.zip -d dependency-check
+          chmod +x dependency-check/bin/dependency-check.sh
+      
+      # Step 4: Run OWASP Dependency-Check scan
+      - name: Run OWASP Dependency-Check
+        run: |
+          dependency-check/bin/dependency-check.sh \
+          --project "MyProject" \
+          --scan ${{ github.workspace }} \
+          --format "HTML" \
+          --out ${{ github.workspace }}/dependency-check-report
+
+      # Step 5: Upload the report as an artifact
+      - name: Upload Dependency-Check Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: ${{ github.workspace }}/dependency-check-report/
+          
+      # Optional: Fail the build if critical vulnerabilities are found
+      - name: Fail if vulnerabilities are found
+        run: |
+          cat ${{ github.workspace }}/dependency-check-report/dependency-check-report.html
+          if grep -q 'CRITICAL' ${{ github.workspace }}/dependency-check-report/dependency-check-report.html; then
+            echo "Critical vulnerabilities found!"
+            exit 1
+          fi
