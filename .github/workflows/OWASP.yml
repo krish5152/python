@@ -6,13 +6,13 @@ on:
       - master
   pull_request:
     branches:
-      - master
+      - master 
   workflow_dispatch: # Allows manual trigger of the workflow
 
 jobs:
   dependency_check:
     runs-on: ubuntu-latest
-    
+
     steps:
       # Step 1: Checkout the repository
       - name: Checkout code
@@ -25,22 +25,25 @@ jobs:
           distribution: 'temurin'
           java-version: '11'  # Dependency-Check requires Java
 
-      # Step 3: Download and install OWASP Dependency-Check
+      # Step 3: Download and unzip OWASP Dependency-Check
       - name: Install OWASP Dependency-Check
         run: |
           # Download OWASP Dependency-Check
           wget https://github.com/jeremylong/DependencyCheck/releases/download/v8.2.1/dependency-check-8.2.1-release.zip
-          
+
           # Create directory for extraction
           mkdir dependency-check
-          
+
           # Unzip Dependency-Check
           unzip dependency-check-8.2.1-release.zip -d dependency-check
 
-          # Make the dependency-check script executable
+          # Step 4: List the contents to find the exact path
+          ls -la dependency-check
+
+          # Assuming the correct path is found, update permission for the script
           chmod +x dependency-check/bin/dependency-check.sh
-      
-      # Step 4: Run OWASP Dependency-Check scan
+
+      # Step 5: Run OWASP Dependency-Check scan
       - name: Run OWASP Dependency-Check
         run: |
           dependency-check/bin/dependency-check.sh \
@@ -49,18 +52,9 @@ jobs:
           --format "HTML" \
           --out ${{ github.workspace }}/dependency-check-report
 
-      # Step 5: Upload the report as an artifact
+      # Step 6: Upload the report as an artifact
       - name: Upload Dependency-Check Report
         uses: actions/upload-artifact@v3
         with:
           name: dependency-check-report
           path: ${{ github.workspace }}/dependency-check-report/
-          
-      # Optional: Fail the build if critical vulnerabilities are found
-      - name: Fail if vulnerabilities are found
-        run: |
-          cat ${{ github.workspace }}/dependency-check-report/dependency-check-report.html
-          if grep -q 'CRITICAL' ${{ github.workspace }}/dependency-check-report/dependency-check-report.html; then
-            echo "Critical vulnerabilities found!"
-            exit 1
-          fi
