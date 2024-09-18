@@ -3,10 +3,10 @@ name: OWASP Dependency-Check
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
   workflow_dispatch: # Allows manual trigger of the workflow
 
 jobs:
