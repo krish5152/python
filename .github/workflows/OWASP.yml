@@ -10,7 +10,7 @@ on:
 
 jobs:
   dependency-check:
-    name: OWASP Dependency-Check
+    name: OWASP Dependency-Check for Python
     runs-on: ubuntu-latest
 
     steps:
@@ -27,7 +27,12 @@ jobs:
 
       - name: Run OWASP Dependency-Check
         run: |
-          ./dependency-check/bin/dependency-check.sh --project "Python" --scan . --format "ALL" --out ./odc-reports
+          # Scan the requirements.txt file or setup.py for vulnerabilities
+          ./dependency-check/bin/dependency-check.sh \
+            --project "Python Dependencies" \
+            --scan requirements.txt \
+            --format "ALL" \
+            --out ./odc-reports
 
       - name: Upload Dependency-Check Report
         uses: actions/upload-artifact@v3
