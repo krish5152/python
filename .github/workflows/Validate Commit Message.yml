@@ -1,0 +1,26 @@
+name: "Validate Commit Message"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  check-commit-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check commit message
+        run: |
+          # Get the latest commit message
+          commit_message=$(git log -1 --pretty=%B)
+          
+          echo "Commit message: $commit_message"
+          
+          # Define the regex pattern for commit messages (start with F and end with number)
+          if [[ ! "$commit_message" =~ ^F.*[0-9]$ ]]; then
+            echo "Commit message \"$commit_message\" does not follow the required convention: start with 'F' and end with a number."
+            exit 1
+          else
+            echo "Commit message \"$commit_message\" follows the naming convention."
+          fi
