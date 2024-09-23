@@ -22,9 +22,9 @@ jobs:
           
           echo "Commit message: $commit_message"
           
-          # Define the regex pattern for commit messages (start with F and end with a number)
-          if [[ ! "$commit_message" =~ ^F.*[0-9]$ ]]; then
-            echo "Commit message \"$commit_message\" does not follow the required convention: start with 'F' and end with a number."
+          # Define the regex pattern for commit messages that start with 'MKT-', followed by a number or any name
+          if [[ ! "$commit_message" =~ ^MKT-[0-9]+.*$ && ! "$commit_message" =~ ^MKT-[a-zA-Z]+.*$ ]]; then
+            echo "Commit message \"$commit_message\" does not follow the required convention: 'MKT-<number>' or 'MKT-<name>'."
             exit 1
           else
             echo "Commit message \"$commit_message\" follows the naming convention."
