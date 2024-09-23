@@ -1,0 +1,41 @@
+name: OWASP Dependency-Check
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  dependency-check:
+    name: OWASP Dependency-Check for Python
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Download OWASP Dependency-Check
+        run: |
+          wget https://github.com/jeremylong/DependencyCheck/releases/download/v7.4.0/dependency-check-7.4.0-release.zip
+          unzip dependency-check-7.4.0-release.zip
+          
+      - name: Grant execution permission for the script
+        run: chmod +x ./dependency-check/bin/dependency-check.sh
+
+      - name: Run OWASP Dependency-Check
+        run: |
+          # Scan the requirements.txt file or setup.py for vulnerabilities
+          ./dependency-check/bin/dependency-check.sh \
+            --project "Python Dependencies" \
+            --scan requirements.txt \
+            --format "ALL" \
+            --out ./odc-reports
+
+      - name: Upload Dependency-Check Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: ./odc-reports
