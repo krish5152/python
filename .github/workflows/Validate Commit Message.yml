@@ -4,12 +4,17 @@ on:
   pull_request:
   push:
     branches:
-      - '*'
+      - '*'  # Apply to all branches
 
 jobs:
   check-commit-message:
     runs-on: ubuntu-latest
     steps:
+      # Step to check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      # Step to check the commit message
       - name: Check commit message
         run: |
           # Get the latest commit message
@@ -17,7 +22,7 @@ jobs:
           
           echo "Commit message: $commit_message"
           
-          # Define the regex pattern for commit messages (start with F and end with number)
+          # Define the regex pattern for commit messages (start with F and end with a number)
           if [[ ! "$commit_message" =~ ^F.*[0-9]$ ]]; then
             echo "Commit message \"$commit_message\" does not follow the required convention: start with 'F' and end with a number."
             exit 1
