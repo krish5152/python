@@ -9,5 +9,5 @@ def hello():
     return 'Hello, world'
 
 if __name__ == '__main__':
-    app.run(debug=True)  # You can use debug mode for developments new
+    app.run(debug=True)  # You can use debug mode for developments
 
