@@ -1,0 +1,23 @@
+name: PR Hook Repo Fetch
+
+on:
+  pull_request:
+    branches:
+      - main  # Set this to the branch you want the PRs on
+
+jobs:
+  fetch_hook_repo:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Python Application Repository
+      uses: actions/checkout@v3
+
+    - name: Clone Hook Repository
+      run: |
+        git clone https://github.com/krish5152/git-hooks.git
+        cd your-hook-repo
+        # Perform any specific actions, such as running hook scripts
+
+    - name: Display Cloned Repos
+      run: ls -R
