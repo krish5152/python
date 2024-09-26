@@ -1,3 +1,0 @@
-[submodule ".githooks"]
-	path = .githooks
-	url = https://github.com/krish5152/git-hooks.git
